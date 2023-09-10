@@ -1,0 +1,107 @@
+Standard MVG:
+    NO PCA:
+        min dcf: 0.33522540983606564
+    PCA=9:
+        min dcf: 0.33836065573770485
+    PCA=8:
+        min dcf: 0.3367827868852459
+    PCA=7:
+        min dcf: 0.3330327868852459
+    PCA=6:
+        min dcf: 0.3345696721311475
+
+Naive-Bayes:
+    NO PCA
+        min dcf: 0.4711065573770491
+    PCA=9
+        min dcf: 0.3802049180327869
+    PCA=8
+        min dcf: 0.3905122950819672
+    PCA=7
+        min dcf: 0.38770491803278684
+    PCA=6
+        min dcf: 0.38706967213114757
+
+Tied:
+    NO PCA:
+        min dcf: 0.4758606557377049
+    PCA=9:
+        min dcf: 0.4686885245901639
+    PCA=8:
+        min dcf: 0.4739754098360655
+    PCA=7:
+        min dcf: 0.4674385245901639
+    PCA=6:
+        min dcf: 0.4714959016393442
+
+Standard MVG 0.5:
+    NO PCA:
+        min dcf: 0.10575819672131148    
+    PCA=9:
+        min dcf: 0.1049795081967213
+    PCA=8:
+        min dcf: 0.10426229508196722
+    PCA=7:
+        min dcf: 0.10575819672131148
+    PCA=6:
+        min dcf: 0.10463114754098361
+
+Naive-Bayes 0.5:
+    NO PCA:
+        min dcf: 0.13399590163934427
+    PCA=9:
+        min dcf: 0.10940573770491803
+    PCA=8:
+        min dcf: 0.10821721311475409
+    PCA=7:
+        min dcf: 0.10985655737704918
+    PCA=6:
+        min dcf: 0.10875
+
+Tied 0.5:
+    NO PCA:
+        min dcf: 0.17022540983606557
+    PCA=9:
+        min dcf: 0.1699795081967213
+    PCA=8:
+        min dcf: 0.16795081967213116
+    PCA=7:
+        min dcf: 0.16801229508196722
+    PCA=6:
+        min dcf: 0.1698360655737705
+
+Standard MVG 0.9:
+    NO PCA:
+        min dcf: 0.19147540983606556
+    PCA=9:
+        min dcf: 0.19375
+    PCA=8:
+        min dcf: 0.18971311475409838
+    PCA=7:
+        min dcf: 0.1884016393442623
+    PCA=6:
+        min dcf: 0.19278688524590165
+
+Naive-Bayes 0.9:
+    NO PCA:
+        min dcf: 0.24182377049180334
+    PCA=9:
+        min dcf: 0.16665983606557377
+    PCA=8:
+        min dcf: 0.17397540983606558
+    PCA=7:
+        min dcf: 0.17397540983606558
+    PCA=6:
+        min dcf: 0.17200819672131146
+        
+Tied 0.9:
+    NO PCA:
+        min dcf: 0.37952868852459015
+    PCA=9:
+        min dcf: 0.39133196721311475
+    PCA=8:
+        min dcf: 0.3926434426229508
+    PCA=7:
+        min dcf: 0.3939549180327869
+    PCA=6:
+        min dcf: 0.3945696721311476
