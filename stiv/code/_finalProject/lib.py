@@ -6,6 +6,7 @@ import math
 from scipy import special as sp
 import seaborn as sb
 import pandas as pd
+from scipy.interpolate import make_interp_spline
 
 colors = ['cyan','red']
 etichetta = ["Same speaker", "Different speakers"]
@@ -88,6 +89,29 @@ def statistics(data, labels):
 			plt.savefig("plots/scatter/" + str(i+1) + "vs" + str(j+1))
 			plt.close() 
 
+def explainedVariance(D):
+	Dc = centerData(D)
+	C = (1/D.shape[1])*np.dot(Dc, Dc.T)
+	s = np.linalg.eigh(C)[0]
+	s = np.sort(s)[::-1]
+	y = []
+
+	for i in range(len(s)):
+		n = s[0:i].sum()
+		d = s.sum()
+		y = np.append(y, n/d)
+
+	x = np.linspace(1,12,12, endpoint=True)
+
+	plt.figure()
+	plt.plot(x,y,marker='o')
+	plt.grid()
+	plt.xlabel('#dimensions')
+	
+	plt.ylabel('Fraction of explained variance')
+	plt.savefig('plots/explainedVariance')
+	plt.close()
+
 def heatmaps_binary(data, labels):
 	data_male = data[:, labels==0]
 	data_female = data[:, labels==1]
@@ -120,6 +144,7 @@ def pca(data, m):
 	U = np.linalg.svd(C)[0]
 	P = U[:, 0:m]
 	DP = np.dot(P.T, data)
+
 	return DP
 
 def lda(x, labels, m, plot):
@@ -169,36 +194,30 @@ def lda(x, labels, m, plot):
 
 	return y
 
-def calculateParameters(x, labels):
+def calculateParametersMVG(x, labels):
 		M, N = x.shape
-		mus = np.array([])
-		Cs = np.array([])
-		wC = np.zeros((M,M))
 
-		for l in np.unique(labels):
-			xl = x[:,labels==l]
-			mul = xl.mean(1).reshape(M,1)
+		x0 = x[:,labels==0]
+		M0, N0 = x0.shape
+		mu0 = x0.mean(1).reshape(M0,1)
+		xc0 = x0-mu0
+		C0 = 1/N0 * np.dot(xc0, xc0.T)
+		CsDiag0 = C0*np.eye(C0.shape[0])
 
-			mus = np.column_stack((mus, mul)) if mus.size > 0 else mul
+		x1 = x[:,labels==1]
+		M1, N1 = x1.shape
+		mu1 = x1.mean(1).reshape(M1,1)
+		xc1 = x1-mu1
+		C1 = 1/N1 * np.dot(xc1, xc1.T)
+		CsDiag1 = C1*np.eye(C1.shape[0])
 
-			xcl = xl-mul
-			Nl = np.shape(xl)[1]
-			Cl = 1/Nl * np.dot(xcl, xcl.T)
-			Cs = np.vstack((Cs, [Cl])) if Cs.shape[0] > 0 else np.array([Cl])
+		wC = (C0*N0 + C1*N1)/N
 
-			wC += Cl*Nl
-
-		wC /= N
-
-		wCs = np.array([wC, wC])
-
-		CsDiag = np.vstack( ( [ Cs[0]*np.eye(Cs[0].shape[0]) ] , [ Cs[1]*np.eye(Cs[1].shape[0]) ] ) )
-
-		return mus, Cs, wCs, CsDiag
+		return (mu0, mu1), (C0, C1), (CsDiag0, CsDiag1), wC 
 
 def logpdf_GAU_ND(x, u, C):
 	M = C.shape[0] #number of features
-	xc = centerData(x)
+	xc = x-u
 
 	log_det_C = np.linalg.slogdet(C)[1]
 
@@ -206,57 +225,7 @@ def logpdf_GAU_ND(x, u, C):
 
 	return log_N
 
-def mvg(mus, Cs, DTE, LTE):
-	S = np.array([])
-
-	for i in range(Cs.shape[0]):
-		Si = logpdf_GAU_ND(DTE, mus[:,i], Cs[i])
-		S = np.stack((S, Si))# if S.size>0 else Si
-
-	Pc = 0.1
-
-	## work with logarithms
-	logSJoint = S + np.log(Pc)
-
-	logSMarginal = vrow(sp.logsumexp(S, axis=0))
-
-	logSPost = logSJoint-logSMarginal
-	SPost = np.exp(logSPost)
-
-	pcl = np.argmax(SPost, 0);
-
-	acc = (pcl == LTE).mean()
-	
-	return acc
-
-def k_fold_cross_validation(x, labels, k):
-	num_samples = x.shape[1]
-	indices = np.random.permutation(num_samples)
-	fold_size = num_samples // k
-
-	for i in range(k):
-		fold_start = i * fold_size
-		fold_end = (i + 1) * fold_size
-
-		val_indices = indices[fold_start:fold_end]
-		train_indices = np.concatenate([indices[:fold_start], indices[fold_end:]])
-
-		x_train, labels_train = x[:,train_indices], labels[train_indices]
-		x_val, labels_val = x[:,val_indices], labels[val_indices]
-
-		# MVG
-		# mus, Cs, wCs, CsDiag = calculateParameters(x_train, labels_train)
-		# scoresMVG = np.append(scoresMVG, mvg(mus, Cs, x_val, labels_val))
-		# scoresBayes = np.append(scoresBayes, mvg(mus, CsDiag, x_val, labels_val))
-		# scoresTied = np.append(scoresTied, mvg(mus, wCs, x_val, labels_val))
-		# naivetied is missing
-
-		# SVM
-		# logreg_obj = logreg_obj_wrap(x_train, labels_train, 1e-1)
-		# x0 = np.zeros(x_train.shape[0] + 1)
-		# xmin = bfgs(logreg_obj, x0, approx_grad=True, factr=1e9, maxiter=5*1e3)[0]
-		# w, b = xmin[0:-1], xmin[-1]
-		# S = np.dot(w, x_val) + b
+#def llr_mvg():
 
 def logreg_obj_wrap(DTR, LTR, λ):
 	def logreg_obj(v):
@@ -300,31 +269,30 @@ def computeROC(S, LTE):
     plt.title("ROC")
     plt.show()
     
-def computeMinDCF(S, LTE, pi1, Cfn, Cfp):
-    S_sorted = np.sort(S)
-    Bdummy = np.min([pi1*Cfn,(1-pi1)*Cfp])
-    
-    DCFs = np.array([], dtype=float)
+def computeMinDCF(pi1, Cfn, Cfp, S, LTE):
+	S_sorted = np.sort(S)
+	Bdummy = np.min([pi1*Cfn,(1-pi1)*Cfp])
 
-    for t in S_sorted:
-        predictions = np.array((S>t), dtype=int)
+	DCFs = np.array([], dtype=float)
 
-        CM = np.zeros((2,2), dtype=int)
+	for t in S_sorted:
+		predictions = np.array((S>t), dtype=int)
 
-        for i in range(predictions.size):
-            CM[predictions[i], LTE[i]] += 1
+		CM = np.zeros((2,2), dtype=int)
+		for i in range(predictions.size):
+			CM[predictions[i], int(LTE[i])] += 1
 
-        FNR = CM[0,1]/(CM[0,1]+CM[1,1])
-        FPR = CM[1,0]/(CM[0,0]+CM[1,0])
-        DCF = (pi1*Cfn*FNR +(1-pi1)*Cfp*FPR)/Bdummy
+		FNR = CM[0,1]/(CM[0,1]+CM[1,1])
+		FPR = CM[1,0]/(CM[0,0]+CM[1,0])
+		DCF = (pi1*Cfn*FNR +(1-pi1)*Cfp*FPR)/Bdummy
 
-        DCFs= np.append(DCFs, DCF)
+		DCFs= np.append(DCFs, DCF)
 
-    minDCF = np.min(DCFs)
+	minDCF = np.min(DCFs)
 
-    return minDCF
+	return minDCF
 
-def computeActualDCF(llr, labels, pi1, Cfn, Cfp):
+def computeActualDCF(pi1, Cfn, Cfp, llr, labels):
     CM = np.zeros((2,2), dtype=int)
     t  = -np.log((pi1*Cfn)/((1-pi1)*Cfp))
     predictions = np.array((llr>t), dtype=int)
@@ -338,14 +306,41 @@ def computeActualDCF(llr, labels, pi1, Cfn, Cfp):
 
     return DCF
 
+def std_variances(D):
+    Dc = centerData(D) 
+    C = (1/D.shape[1])*np.dot(Dc, Dc.T)
+    
+    diag = np.reshape(np.diag(C), (D.shape[0], 1))
+    diag = np.sqrt(diag)
+
+    D = D/diag
+
+    return D
+
+def whitening(Dx, D):
+    mu = D.mean(1) 
+    Dc = D - vcol(mu) 
+    C = (1/D.shape[1])*np.dot(Dc, Dc.T)
+
+    sqrtC = sp.linalg.fractional_matrix_power(C, 0.5)
+    Dw = np.dot(sqrtC, Dx)
+    
+    return Dw
+
+def l2(D): 
+    for i in range(D.shape[1]):
+        D[:, i] = D[:, i]/np.linalg.norm(D[:, i])
+
+    return D
+
 def bayesErrorPlots(eplo, llr, labels):
     DCFs = np.array([], dtype=float)
     minDCFs = np.array([], dtype=float)
     
     for p in eplo:
         ep = 1/(1+math.exp(-p))
-        DCF = computeActualDCF(llr, labels, ep, 1,1)
-        minDCF = computeMinDCF(llr, labels, ep, 1,1)
+        DCF = computeActualDCF(ep, 1, 1, llr, labels)
+        minDCF = computeMinDCF(ep, 1, 1, llr, labels)
 
         DCFs= np.append(DCFs, DCF)
         minDCFs= np.append(minDCFs, minDCF)

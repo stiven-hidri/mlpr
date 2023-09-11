@@ -1,0 +1,50 @@
+min_dcf mvg: 0.192 p: 0.5
+min_dcf nb: 0.195 p: 0.5
+min_dcf tied: 0.187 p: 0.5
+min_dcf mvg: 0.437 p: 0.1
+min_dcf nb: 0.46 p: 0.1
+min_dcf tied: 0.405 p: 0.1
+min_dcf mvg: 0.56 p: 0.9
+min_dcf nb: 0.551 p: 0.9
+min_dcf tied: 0.557 p: 0.9
+
+
+min_dcf mvg: 0.187 p: 0.5
+min_dcf nb: 0.191 p: 0.5
+min_dcf tied: 0.18 p: 0.5
+min_dcf mvg: 0.418 p: 0.1
+min_dcf nb: 0.453 p: 0.1
+min_dcf tied: 0.395 p: 0.1
+min_dcf mvg: 0.554 p: 0.9
+min_dcf nb: 0.546 p: 0.9
+min_dcf tied: 0.539 p: 0.9
+
+min_dcf mvg: 0.168 p: 0.5
+min_dcf nb: 0.171 p: 0.5
+min_dcf tied: 0.166 p: 0.5
+min_dcf mvg: 0.423 p: 0.1
+min_dcf nb: 0.446 p: 0.1
+min_dcf tied: 0.395 p: 0.1
+min_dcf mvg: 0.488 p: 0.9
+min_dcf nb: 0.48 p: 0.9
+min_dcf tied: 0.469 p: 0.9
+
+min_dcf mvg: 0.119 p: 0.5
+min_dcf nb: 0.131 p: 0.5
+min_dcf tied: 0.12 p: 0.5
+min_dcf mvg: 0.298 p: 0.1
+min_dcf nb: 0.305 p: 0.1
+min_dcf tied: 0.293 p: 0.1
+min_dcf mvg: 0.356 p: 0.9
+min_dcf nb: 0.362 p: 0.9
+min_dcf tied: 0.345 p: 0.9
+
+min_dcf mvg: 0.114 p: 0.5
+min_dcf nb: 0.464 p: 0.5
+min_dcf tied: 0.112 p: 0.5
+min_dcf mvg: 0.303 p: 0.1
+min_dcf nb: 0.772 p: 0.1
+min_dcf tied: 0.292 p: 0.1
+min_dcf mvg: 0.354 p: 0.9
+min_dcf nb: 0.778 p: 0.9
+min_dcf tied: 0.338 p: 0.9
