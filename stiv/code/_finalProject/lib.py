@@ -3,7 +3,7 @@ from scipy.optimize import fmin_l_bfgs_b as bfgs
 import os.path as path
 import numpy as np
 import math
-from scipy import special as sp
+import scipy as sp
 import seaborn as sb
 import pandas as pd
 from scipy.interpolate import make_interp_spline
@@ -322,7 +322,7 @@ def whitening(Dx, D):
     Dc = D - vcol(mu) 
     C = (1/D.shape[1])*np.dot(Dc, Dc.T)
 
-    sqrtC = sp.linalg.fractional_matrix_power(C, 0.5)
+    sqrtC =  sp.linalg.fractional_matrix_power(C, 0.5)
     Dw = np.dot(sqrtC, Dx)
     
     return Dw

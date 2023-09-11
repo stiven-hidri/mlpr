@@ -61,29 +61,29 @@ def mvgEvaluation(x, labels, p, Cfn, Cfp):
     print(f"min_dcf tied: {round(min_DCF, 3)} p: {p}")
     
 def LREvaluationWrap(DTR, LTR):
-    data = [DTR, np.load("data/pca/pca_11.npy"), np.load("data/pca/pca_10.npy"), np.load("data/pca/pca_9.npy"), np.load("data/pca/pca_8.npy")]
+    # data = [DTR, np.load("data/pca/pca_11.npy"), np.load("data/pca/pca_10.npy"), np.load("data/pca/pca_9.npy"), np.load("data/pca/pca_8.npy")]
     app = [(0.1, 1, 1), (0.5, 1, 1), (0.9, 1, 1)]
     
-    min_DCFs = np.array([])
-    lambdas = [1e-4, 1e-3, 1e-2, 1e-1, 1, 10, 100, 1000]
+    # min_DCFs = np.array([])
+    # lambdas = [1e-4, 1e-3, 1e-2, 1e-1, 1, 10, 100, 1000]
+
+    # for i, d in enumerate(data):
+    #     min_DCFs = []
+    #     for (p, Cfn, Cfp) in app:
+    #         res = LREvaluation(d, LTR, p, Cfn, Cfp, 12-i)
+    #         min_DCFs.append(res)
+
+    data = [DTR, np.load("data/pca/pca_11.npy")]
 
     for i, d in enumerate(data):
-        min_DCFs = np.array([])
+        Dc = centerData(d)
+        Ds = std_variances(Dc)
+        Dw = whitening(Ds, d)
+        data[i] = Dw
+
+    for i, d in enumerate(data):
         for (p, Cfn, Cfp) in app:
-            res = LREvaluation(d, LTR, p, Cfn, Cfp, 12-i)
-            min_DCFs = np.append(min_DCFs, res)
-
-        for ix, md in enumerate(min_DCFs):
-            plt.figure()
-            plt.xscale('log')
-            plt.title('')
-            plt.plot(lambdas, md, label=f"pi = {app[ix][0]}")
-            plt.legend()
-            plt.savefig(f"plots/LR/dim{12-i}")
-        
-
-
-    
+            LREvaluation(d, LTR, p, Cfn, Cfp, 12-i)
 
 def LREvaluation(x, labels, p, Cfn, Cfp, msg):
     lambdas = [1e-4, 1e-3, 1e-2, 1e-1, 1, 10, 100, 1000]
@@ -126,6 +126,7 @@ def main():
     #explainedVariance(DTR)
     #mvgEvaluationWrap(DTR, LTR)
     LREvaluationWrap(DTR, LTR)
+
 
 if __name__ == '__main__':
     main()
