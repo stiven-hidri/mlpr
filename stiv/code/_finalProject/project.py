@@ -106,10 +106,8 @@ def LREvaluation(x, labels, p, Cfn, Cfp, msg):
             x_val, labels_val = x[:,val_indices], labels[val_indices]
 
             #MVG
-            (mu0, mu1), (C0, C1), (CsDiag0, CsDiag1), wC = calculateParametersMVG(x_train, labels_train)
-
             logreg_obj = logreg_obj_wrap(x_train, labels_train, li)
-            xmin, f, d  = bfgs(logreg_obj, np.zeros(x_train.shape[0] + 1), approx_grad=True, factr=1e9, maxiter=5*1e3)
+            xmin, f, d  = bfgs(logreg_obj, np.zeros(x_train.shape[0] + 1), approx_grad=True, factr=1e10, maxiter=100)
             w, b = xmin[0:-1], xmin[-1]
             S = np.dot(w, x_val) + b
 
@@ -118,7 +116,7 @@ def LREvaluation(x, labels, p, Cfn, Cfp, msg):
 
         min_DCF = computeMinDCF(p, Cfp, Cfn, LR_llr_cumulative, labels_cumulative)
         min_DCFs = np.append(min_DCFs, min_DCF)
-        print(f"min_dcf LR: {round(min_DCF, 3)} p: {p} lambda: {li} dim: {msg}")
+        print(f"min_dcf LR: {min_DCF} p: {p} lambda: {li} dim: {msg}")
 
     return min_DCFs
 
