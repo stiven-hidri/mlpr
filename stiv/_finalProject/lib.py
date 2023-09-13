@@ -368,7 +368,7 @@ def compute_svm(DTR, LTR, DTE, K, C):
 
     # define the array of constraints for the objective
     BC = [(0, C) for i in range(0, DTR.shape[1])]
-    [alpha, LD, d] = sp.optimize.fmin_l_bfgs_b(svm_wrapper(H, DTR), np.zeros((DTR.shape[1],1)), bounds=BC, factr=1.0, maxiter=100, maxfun=100 )
+    [alpha, LD, d] = sp.optimize.fmin_l_bfgs_b(svm_wrapper(H, DTR), np.zeros((DTR.shape[1],1)), bounds=BC, factr=1.0 )
     
     # need to compute the primal solution from the dual solution
     w = np.multiply(alpha, np.multiply(DTRE, Z.T)).sum(axis=1)
