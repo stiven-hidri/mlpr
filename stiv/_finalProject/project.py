@@ -121,12 +121,12 @@ def LREEvaluation(x, labels, p, Cfn, Cfp, msg):
     return min_DCFs
 
 def SVMEvaluationWrap(DTR, LTR):
-    data = [DTR, np.load("data/pca/pca_11.npy")]
+    data = [np.load("data/pca/pca_11.npy"), DTR]
     app = [(0.1, 1, 1), (0.5, 1, 1), (0.9, 1, 1)]
     
     min_DCFs = np.array([])
 
-    for i, d in enumerate(data):
+    for d in data:
         min_DCFs = []
         for (p, Cfn, Cfp) in app:
             res = SVMEvaluation(d, LTR, p, Cfn, Cfp)
@@ -142,7 +142,7 @@ def SVMEvaluation(x, labels, p, Cfn, Cfp):
     SVM_S_cumulative = np.array([])
     labels_cumulative = np.array([])
     
-    print("[ ", end='')
+    print("[ ", end="", flush=True)
 
     for c in C:        
         for i in range(k):
@@ -161,12 +161,11 @@ def SVMEvaluation(x, labels, p, Cfn, Cfp):
 
         min_DCF = computeMinDCF(p, Cfp, Cfn, SVM_S_cumulative, labels_cumulative)
         min_DCFs = np.append(min_DCFs, min_DCF)
-        print(f"{min_DCF}, ", end='')
+        print(f"{min_DCF}, ", end="", flush=True)
 
     print()
 
     return min_DCFs
-
 
 def main():
     (DTR, LTR), (DTE, LTE) = readTrainAndTestData()
