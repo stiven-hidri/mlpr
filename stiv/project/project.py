@@ -174,7 +174,3 @@ def main():
     #MVGEvaluationWrap(DTR, LTR)
     #LREEvaluationWrap(DTR, LTR)
     SVMEvaluationWrap(DTR, LTR)
-
-
-if __name__ == '__main__':
-    main()
