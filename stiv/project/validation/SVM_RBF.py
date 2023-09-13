@@ -7,7 +7,7 @@ def SVMEvaluationWrap(DTR, LTR):
     log = ""
     for d in data:
         for pi in PIs:
-            s = SVMEvaluation(d, LTR, pi)
+            s = SVMRBFEvaluation(d, LTR, pi)
             log += s + "\n"
 
     txt=open("SVM_RBF_MINDCFS.txt", "w")
@@ -17,7 +17,7 @@ def SVMEvaluationWrap(DTR, LTR):
 
     
 
-def SVMEvaluation(x, labels, pi):
+def SVMRBFEvaluation(x, labels, pi):
     Cs = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4]
     Ys = [0.1, 0.01, 0.001]
     SVM_S_cumulative = np.array([])
@@ -62,6 +62,10 @@ def SVMEvaluation(x, labels, pi):
 
     return s
 
-def main():
-    (DTR, LTR), (DTE, LTE) = readTrainAndTestData()
+if __name__ == '__main__':
+    DTR = np.load("../data/DTR.npy")
+    LTR = np.load("../data/LTR.npy")
+    DTE = np.load("../data/DTE.npy")
+    LTE = np.load("../data/LTE.npy")
+
     SVMEvaluationWrap(DTR, LTR)

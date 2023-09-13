@@ -1,4 +1,5 @@
 from lib import *
+import SVM_RBF
 k=10
 
 def SVMEvaluationWrap(DTR, LTR):
@@ -8,7 +9,7 @@ def SVMEvaluationWrap(DTR, LTR):
     log = ""
     for d in data:
         for pi in PIs:
-            res, s = SVMEvaluation(d, LTR, pi)
+            res, s = SVMPolyEvaluation(d, LTR, pi)
             ALL_minDCF.append(res)
             log += s + "\n"
 
@@ -19,7 +20,7 @@ def SVMEvaluationWrap(DTR, LTR):
 
     
 
-def SVMEvaluation(x, labels, pi):
+def SVMPolyEvaluation(x, labels, pi):
     Cs = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4]
     min_DCFs = np.array([], dtype=float)
     SVM_S_cumulative = np.array([])
@@ -59,6 +60,11 @@ def SVMEvaluation(x, labels, pi):
 
     return min_DCFs, s
 
-def main():
-    (DTR, LTR), (DTE, LTE) = readTrainAndTestData()
+if __name__ == '__main__':
+    DTR = np.load("../data/DTR.npy")
+    LTR = np.load("../data/LTR.npy")
+    DTE = np.load("../data/DTE.npy")
+    LTE = np.load("../data/LTE.npy")
     SVMEvaluationWrap(DTR, LTR)
+
+    SVM_RBF.SVMEvaluationWrap(DTR, LTR)
