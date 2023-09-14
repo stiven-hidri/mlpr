@@ -1,4 +1,6 @@
 from lib import *
+import SVM_POLY
+
 k=10
 
 def SVMEvaluationWrap(DTR, LTR):
@@ -14,12 +16,9 @@ def SVMEvaluationWrap(DTR, LTR):
     txt.write(log) 
     txt.close()
 
-
-    
-
 def SVMRBFEvaluation(x, labels, pi):
     Cs = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4]
-    Ys = [0.1, 0.01, 0.001]
+    Ys = [0.001]
     SVM_S_cumulative = np.array([])
     labels_cumulative = np.array([])
 
@@ -30,9 +29,9 @@ def SVMRBFEvaluation(x, labels, pi):
     s=""
 
     for Y in Ys:
+        s += "[ "
+        print("[ ", end="", flush=True)
         for C in Cs:
-            s += "[ "
-            print("[ ", end="", flush=True)
             for i in range(k):
                 fold_start = i * fold_size
                 fold_end = (i + 1) * fold_size
@@ -55,9 +54,6 @@ def SVMRBFEvaluation(x, labels, pi):
         s += "\n"
         print()
 
-    s += "\n"
-    print()
-
     
 
     return s
@@ -69,3 +65,5 @@ if __name__ == '__main__':
     LTE = np.load("../data/LTE.npy")
 
     SVMEvaluationWrap(DTR, LTR)
+
+    SVM_POLY.SVMEvaluationWrap(DTR, LTR)

@@ -415,7 +415,7 @@ def compute_svm_RBF(DTR, LTR, DTE, K, C, g):
             H[i][j] *= (np.exp(-g*(np.linalg.norm(DTRE.T[i] - DTRE.T[j]))**2) + K**2)
 
     BC = [(0, C) for i in range(0, DTR.shape[1])]
-    [alpha, f, d2] = sp.optimize.fmin_l_bfgs_b(svm_wrapper(H, DTR), np.zeros((DTR.shape[1],1)), bounds=BC, factr=1)
+    [alpha, f, d2] = sp.optimize.fmin_l_bfgs_b(svm_wrapper(H, DTR), np.zeros((DTR.shape[1],1)), bounds=BC, factr=1000, maxiter=100, maxfun=100)
     
     DTEE = np.vstack([DTE, np.ones((1, DTE.shape[1])) * K])
 
