@@ -41,7 +41,5 @@ def SVMEvaluation(x, labels, PI):
 if __name__ == '__main__':
     DTR = np.load("../data/DTR.npy")
     LTR = np.load("../data/LTR.npy")
-    DTE = np.load("../data/DTE.npy")
-    LTE = np.load("../data/LTE.npy")
 
     SVMEvaluationWrap(DTR, LTR)

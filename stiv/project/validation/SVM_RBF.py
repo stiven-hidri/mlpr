@@ -60,5 +60,4 @@ def SVMRBFEvaluation(x, labels, pi):
 if __name__ == '__main__':
     DTR = np.load("../data/DTR.npy")
     LTR = np.load("../data/LTR.npy")
-
     SVMEvaluationWrap(DTR, LTR)
