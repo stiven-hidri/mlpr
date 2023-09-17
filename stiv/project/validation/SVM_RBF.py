@@ -1,11 +1,10 @@
 from lib import *
-import SVM_POLY
+from numba import njit
 
 k=10
-
 def SVMEvaluationWrap(DTR, LTR):
     data = [np.load("../data/pca/pca_11.npy"), DTR]
-    PIs = [0.1, 0.5, 0.9]
+    PIs = [0.5]
     log = ""
     for d in data:
         for pi in PIs:
@@ -17,8 +16,8 @@ def SVMEvaluationWrap(DTR, LTR):
     txt.close()
 
 def SVMRBFEvaluation(x, labels, pi):
-    Cs = [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4]
-    Ys = [0.001]
+    Cs = [1e-5, 1e5]
+    Ys = [0.01,0.001]
     SVM_S_cumulative = np.array([])
     labels_cumulative = np.array([])
 
@@ -49,7 +48,7 @@ def SVMRBFEvaluation(x, labels, pi):
             min_DCF = computeMinDCF(pi, 1, 1, SVM_S_cumulative, labels_cumulative)
             
             s+=  f"{min_DCF}, "
-            print(f"{min_DCF}, ", end="", flush=True)
+            print(str(min_DCF)+", ", end="", flush=True)
 
         s += "\n"
         print()
@@ -61,9 +60,5 @@ def SVMRBFEvaluation(x, labels, pi):
 if __name__ == '__main__':
     DTR = np.load("../data/DTR.npy")
     LTR = np.load("../data/LTR.npy")
-    DTE = np.load("../data/DTE.npy")
-    LTE = np.load("../data/LTE.npy")
 
     SVMEvaluationWrap(DTR, LTR)
-
-    SVM_POLY.SVMEvaluationWrap(DTR, LTR)

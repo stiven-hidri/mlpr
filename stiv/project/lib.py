@@ -7,7 +7,7 @@ import scipy as sp
 import seaborn as sb
 import pandas as pd
 from scipy.interpolate import make_interp_spline
-import sys
+from numba import njit
 
 colors = ['cyan','red']
 etichetta = ["Same speaker", "Different speakers"]
@@ -347,7 +347,7 @@ def bayesErrorPlots(eplo, llr, labels):
     plt.xlim([-3, 3])
     plt.show()
 
-
+@njit(parallel=True, fastmath=True)
 def svm_wrapper(H, DTR):
     def svm_obj(alpha):
         LD = 0.5 * np.dot(alpha.T, np.dot(H, alpha)) - np.dot(alpha.T, np.ones((DTR.shape[1], 1)))
@@ -402,6 +402,7 @@ def compute_svm_polykernel(DTR, LTR, DTE, K, C, d, c):
     
     return S
 
+@njit(parallel=True, fastmath=True)
 def compute_svm_RBF(DTR, LTR, DTE, K, C, g):
     Z = LTR * 2 - 1
     DTRE = np.vstack([DTR, np.ones((1, DTR.shape[1])) * K])
