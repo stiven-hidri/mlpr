@@ -297,7 +297,7 @@ def computeActualDCF(pi1, Cfn, Cfp, llr, labels):
     predictions = np.array((llr>t), dtype=int)
     Bdummy = np.min([pi1*Cfn, (1-pi1)*Cfp])
     for i in range(predictions.size):
-        CM[predictions[i], labels[i]] += 1
+        CM[int(predictions[i]), int(labels[i])] += 1
 
     FNR = CM[0,1]/(CM[0,1]+CM[1,1])
     FPR = CM[1,0]/(CM[0,0]+CM[1,0])
@@ -339,13 +339,6 @@ def bayesErrorPlots(eplo, llr, labels):
         minDCFs= np.append(minDCFs, minDCF)
 
     return minDCFs, DCFs
-
-    # plt.figure()
-    # plt.plot(eplo, minDCFs, label='min DCF', color='b')
-    # plt.plot(eplo, DCFs, label='DCF', color='r')
-    # plt.ylim([0, 1.1])
-    # plt.xlim([-3, 3])
-    # plt.show()
 
 def svm_wrapper(H, DTR):
     def svm_obj(alpha):

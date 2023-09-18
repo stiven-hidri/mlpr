@@ -3,8 +3,9 @@ from lib import *
 k=10
 v='full'
 
-def comparison(x_raw, x_raw_pre, x_pca11, labels, pi):
-    GMM_S_cumulative = np.array([])
+def comparison(x_raw, x_raw_pre, x_pca11, labels):
+    print("start...")
+    """ GMM_S_cumulative = np.array([])
     mvg_llr_tied_cumulative = np.array([])
     LR_llr_cumulative = np.array([])
     SVM_S_cumulative = np.array([])
@@ -69,16 +70,26 @@ def comparison(x_raw, x_raw_pre, x_pca11, labels, pi):
     np.save("svm_llr", SVM_S_cumulative)
     np.save("lr_llr", LR_llr_cumulative)
     np.save("mvgtied_llr", mvg_llr_tied_cumulative)
-    np.save("labels", labels_cumulative)
+    np.save("labels", labels_cumulative) """
+
+    GMM_S_cumulative = np.load("gmm_llr.npy")
+    SVM_S_cumulative = np.load("svm_llr.npy")
+    LR_llr_cumulative = np.load("lr_llr.npy")
+    mvg_llr_tied_cumulative = np.load("mvgtied_llr.npy")
+    labels_cumulative = np.load("labels.npy")
 
     print("Done training...")
 
     effPriorLogOdds = np.linspace(-4, 4, 25)
 
     minDCFs_gmm_full, DCFs_gmm_full = bayesErrorPlots(effPriorLogOdds, GMM_S_cumulative, labels_cumulative)
+    print("done gmm dcfs...")
     minDCFs_mvg_tied, DCFs_mvg_tied = bayesErrorPlots(effPriorLogOdds, mvg_llr_tied_cumulative, labels_cumulative)
+    print("done mvg dcfs...")
     minDCFs_lr, DCFs_lr = bayesErrorPlots(effPriorLogOdds, LR_llr_cumulative, labels_cumulative)
+    print("done lr dcfs...")
     minDCFs_svm_poly, DCFs_svm_poly = bayesErrorPlots(effPriorLogOdds, SVM_S_cumulative, labels_cumulative)
+    print("done svm dcfs...")
 
     np.save("minDCFs_gmm_full", minDCFs_gmm_full)
     np.save("DCFs_gmm_full", DCFs_gmm_full)
@@ -110,7 +121,7 @@ def comparison(x_raw, x_raw_pre, x_pca11, labels, pi):
 
 if __name__ == '__main__':
     DTR_raw = np.load("../data/DTR.npy")
-    DTR_pca11 = np.load("../data/pca_11.npy")
+    DTR_pca11 = np.load("../data/pca/pca_11.npy")
 
     Dc = centerData(DTR_raw)
     Ds = std_variances(Dc)
